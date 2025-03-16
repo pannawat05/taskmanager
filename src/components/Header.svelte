@@ -10,7 +10,7 @@
       const content = $("#content");
 
       btn.on("click", function () {
-        content.toggle();
+        content.fadeToggle() 
       });
     });
   });
