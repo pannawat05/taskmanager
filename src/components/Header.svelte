@@ -45,7 +45,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.5rem;
     background-color: #e35205;
     color: white;
     box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.1);
@@ -113,7 +113,7 @@ nav .mobile {
     nav {
         flex-direction: column;
         align-items: flex-start;
-        padding: 1rem;
+        padding: 0.5rem;
     }
     nav .search-wrap {
         width: 100%;
