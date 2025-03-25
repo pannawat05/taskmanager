@@ -72,7 +72,7 @@ nav button {
     margin-left: 5px;
     border: none;
     border-radius: 8px;
-    background-color: #f77f00;
+    background-color:#fb8500;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;

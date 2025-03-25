@@ -1,14 +1,14 @@
 import {writable} from 'svelte/store';
 
 export  const tasks = writable([
-	{id:1,title:"coding",status:false},
-	{id:2,title:"reading books",status:false}
+	{id:1,title:"coding",completed:false},
+	{id:2,title:"reading books",completed:false}
 ]);
 
 export const addTask = (title) =>{
 	tasks.update((items) => [
 		...items,
-		{id: Date.now(), title,complete:false}
+		{id: Date.now(), title,completed:false}
 
 	]);
 };
