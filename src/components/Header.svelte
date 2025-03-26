@@ -1,149 +1,145 @@
+
 <script>
- import { onMount } from "svelte";
-  import jQuery from "jquery";
+    import { onMount } from "svelte";
+    import AddTask from './AddTask.svelte';
+    import { tasks, addTask } from '../stores/tasksStore';
+    import Searchfilter from "./Searchfilter.svelte";
+    import { createEventDispatcher } from 'svelte';
 
-  onMount(() => {
-    const $ = jQuery;
+    let showMenu = false;
+    let showModal = false;
+    let taskName = "";
 
-    $(document).ready(function () {
-      const btn = $("#btn");
-      const content = $("#content");
+ 
+    let searchQuery = '';
+    let filterStatus = 'all';
 
-      btn.on("click", function () {
-        content.fadeToggle() 
-      });
+    const dispatch = createEventDispatcher();
+
+    function handleAddTask() {
+        if (taskName.trim() !== "") {
+            addTask(taskName);
+            taskName = "";
+            showModal = false;
+        }
+    }
+
+    function handleSearch(event) {
+        searchQuery = event.detail.query;
+        updateTaskList();
+    }
+
+    function handleFilter(event) {
+        filterStatus = event.detail.status;
+        updateTaskList();
+    }
+
+    function updateTaskList() {
+       
+        dispatch('update', { query: searchQuery, status: filterStatus });
+    }
+
+    onMount(() => {
+
+        var timeDisplay = document.getElementById("time");
+
+
+function refreshTime() {
+    var dateString = new Date().toLocaleString("th-TH", { timeZone: "Asia/Bangkok" });
+var formattedString = dateString.replace(" ", " - ");
+timeDisplay.innerHTML = formattedString;
+
+}
+
+setInterval(refreshTime, 1000);
     });
-  });
-
 </script>
 
 <nav>
     <div class="mobile">
         <h1>TaskManager App</h1>
-        <div class="ToggleBtn" id="btn">
-            <i class="fa-solid fa-bars" id ="toggle"></i>
+        <div class="ToggleBtn" id="btn" on:click={() => showMenu = !showMenu}>
+            <i class="fa-solid fa-bars" id="toggle"></i>
         </div>
     </div>
-   
-    <div class="body" id="content">
-        <div class="search-wrap">
-            <input
-                type="search"
-                name="search task"
-                placeholder="secach taask"
-                id=""
-            />
-            <button class="search">Search</button>
-        </div>
-        <button class="add">+Add Task</button>
+    
+    <div class="body" class:hidden={!showMenu}>
+        <h2 id="time"></h2>
+
+        <button class="add" on:click={() => showModal = true}><i class="fa-solid fa-plus"></i>Add Task</button>
     </div>
-   
+
+    {#if showModal}
+        <AddTask on:close={() => showModal = false} />
+    {/if}
 </nav>
 
 <style>
- nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    background-color: #e35205;
-    color: white;
-    box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-nav h1 {
-    font-size: 1.8rem;
-    margin-right: 10px;
-}
-nav .search-wrap {
-    display: flex;
-    width: 60%;
-    align-items: center;
-}
-nav input {
-    padding: 0.7rem;
-    width: 70%;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-nav button {
-    padding: 0.6rem 1.2rem;
-    margin-left: 5px;
-    border: none;
-    border-radius: 8px;
-    background-color:#fb8500;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-nav button:hover {
-    background-color: #ff9b31;
-}
-nav button:active {
-    background-color: #e35205;
-}
-nav button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.5);
-}
-nav .add {
-    margin-right: 10px;
-}
-nav .body {
-    display: flex;
-    width: 90%;
-    margin-left: -45%;
-}
-i {
-    font-size: 40px;
-    float: right;
-}
-.ToggleBtn {
-    display: none;
-    width: 30vw;
-}
-nav .mobile {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-}
-
-@media (max-width: 768px) {
     nav {
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 0.5rem;
-    }
-    nav .search-wrap {
-        width: 100%;
-        margin-top: 1rem;
-    }
-    nav input {
-        width: 100%;
-    }
-    nav .add {
-        display: flex;
-        margin-top: 1rem;
-        margin-left: 0;
-    }
-    nav .body {
-        display: none;
-        margin-left: 0;
-    }
-    .ToggleBtn {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 10px;
-        margin-right: 10%;
-    }
-    .ToggleBtn:hover {
-        cursor: pointer;
+        background-color: #e35205;
+        color: white;
+        box-shadow: 1px 5px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
     }
     nav h1 {
-        width: 100%;
-        text-align: left;
+        font-size: 1.8rem;
     }
-}
-
+    nav .search-wrap {
+        display: flex;
+        width: 60%;
+        align-items: center;
+    }
+    nav input {
+        padding: 0.7rem;
+        width: 70%;
+        border: none;
+        border-radius: 8px;
+    }
+    nav button {
+        padding: 0.6rem 1.2rem;
+        margin-left: 5px;
+        border: none;
+        border-radius: 8px;
+        background-color:#ffb703;
+        color: white;
+        cursor: pointer;
+    }
+    nav .add {
+        margin-right: 10px;
+        margin-left:30%;
+        width:15%;
+        font-size: large;
+    }
+    .add i {
+        font-size: large;
+    }
+    nav .body {
+        display: flex;
+        width: 90%;
+        margin-left: -45%;
+    }
+    i {
+        font-size: 40px;
+    }
+    .ToggleBtn {
+        display: none;
+    }
+    nav .mobile {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .search-wrap select {
+        padding: 0.7rem;
+        border: none;
+        border-radius: 8px;
+        box-sizing: border-box;
+        height: 40px;
+        margin-right: 5px;
+        background-color: #fff;
+    }
 </style>

@@ -1,10 +1,10 @@
 <script>
     import Header from '../components/Header.svelte';
     import TaskList from '../components/TaskList.svelte';
+    import AddTask from '../components/AddTask.svelte';
 </script>
 <Header />
 <div class="card">
-    <h1>Avaliable Task</h1>
 <TaskList />
 </div>
 <style>

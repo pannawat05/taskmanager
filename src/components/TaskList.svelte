@@ -1,26 +1,64 @@
 <script>
-    import { tasks } from '../stores/tasksStore';
-    import { onMount } from 'svelte';
+    import { tasks, toggleTask, deleteTask } from '../stores/tasksStore';
+    import SearchFilter from './SearchFilter.svelte'; // Make sure the correct path is used
 
-    let taskList = [];
+    let searchQuery = '';
+    let filterStatus = 'all';
 
-    onMount(() => {
-        $: taskList = $tasks; // อัปเดตค่า taskList ทุกครั้งที่ $tasks เปลี่ยน
-    });
+    function handleSearch(event) {
+        searchQuery = event.detail.query;
+    }
+
+    function handleFilter(event) {
+        filterStatus = event.detail.status;
+    }
+
+    $: filteredTasks = $tasks
+        ? $tasks.filter(task => {
+            const matchesQuery = task.title.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesStatus = filterStatus === 'all' || task.completed.toString() === filterStatus;
+            return matchesQuery && matchesStatus;
+        })
+        : [];
 </script>
 
-{#if taskList.length === 0}
-    <p>No tasks yet. Add some!</p>
+<div  class = "search">
+    <p>Avaliable-Task</p>
+    <SearchFilter on:search={handleSearch} on:filter={handleFilter} />
+</div>
+
+{#if filteredTasks.length === 0}
+    <p>No tasks found.</p>
 {:else}
-    <div>
-        {#each taskList as task (task.id)}
-            <b>
+    <div id="task">
+        {#each filteredTasks as task (task.id)}
+            <b style="text-decoration: {task.completed ? 'line-through' : 'none'};">
                 {#if task.completed}
-                <i class="fa-solid fa-circle-check"></i>
+                    <i 
+                        class="fa-solid fa-circle-check state-icon" 
+                        on:click={() => toggleTask(task.id)}
+                        role="button" 
+                        tabindex="0"
+                        on:keydown={(e) => e.key === 'Enter' && toggleTask(task.id)}
+                    ></i>
                 {:else}
-                <i class="fa-regular fa-circle"></i>
+                    <i 
+                        class="fa-regular fa-circle state-icon" 
+                        on:click={() => toggleTask(task.id)}
+                        role="button" 
+                        tabindex="0"
+                        on:keydown={(e) => e.key === 'Enter' && toggleTask(task.id)}
+                    ></i>
                 {/if}
-                {task.title} &nbsp;<i class="fa-solid fa-trash"></i>
+                {task.title} &nbsp;
+                <i 
+                    class="fa-solid fa-trash" 
+                    on:click={() => deleteTask(task.id)} 
+                    id="del"
+                    role="button"
+                    tabindex="0"
+                    on:keydown={(e) => e.key === 'Enter' && deleteTask(task.id)}
+                ></i>
             </b>
         {/each}
     </div>
@@ -40,4 +78,25 @@
         display: flex;
         flex-direction: column;
     }
+    .state-icon {
+        cursor: pointer;
+    }
+    #del {
+        cursor: pointer;
+    }
+    #del:hover {
+        color: red;
+        font-size: larger;
+    }
+    .search{
+        width:60vw;
+        display: flex;
+    }
+    .search p{
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        font-weight: bold;
+        margin-bottom: 5px s;
+    }
+   
 </style>
