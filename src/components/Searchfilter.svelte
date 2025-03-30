@@ -98,7 +98,7 @@ let istoggle = false;
 
     }
     .form {
-        display: flex;
+        display: none;
         justify-content: center;
         align-items: center;
         animation: both 2s;
