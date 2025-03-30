@@ -1,6 +1,6 @@
 <script>
     import { tasks, toggleTask, deleteTask } from '../stores/tasksStore';
-    import SearchFilter from './SearchFilter.svelte'; // Make sure the correct path is used
+    import SearchFilter from './Searchfilter.svelte'; // Make sure the correct path is used
 
     let searchQuery = '';
     let filterStatus = 'all';
