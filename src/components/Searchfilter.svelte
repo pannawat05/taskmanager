@@ -1,111 +1,98 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
-
+    import { createEventDispatcher, onMount } from 'svelte';
+  
     let searchQuery = '';
     let filterStatus = 'all';
-
     const dispatch = createEventDispatcher();
-
+  
     function handleSearch() {
-        dispatch('search', { query: searchQuery });
+      dispatch('search', { query: searchQuery });
     }
-
+  
     function handleFilterChange(event) {
-        filterStatus = event.target.value;
-        dispatch('filter', { status: filterStatus });
+      filterStatus = event.target.value;
+      dispatch('filter', { status: filterStatus });
     }
-let istoggle = false;
+  
+    let isToggled = false;
     function hideform() {
-        let form = document.querySelector('.form');
-        if (istoggle) {
-            form.style.display = 'none';
-            istoggle = false;
-
-        } else {
-            form.style.display = 'flex';
-            istoggle = true;
-        }
-
+      isToggled = !isToggled;
     }
-</script>
-
-<div class="s">
-    <button type="button" class="fa-solid fa-filter" id="f" on:click={hideform} aria-label="Toggle filter form"></button>
-    <div class="form">
-        <select name="state" id="state" on:change={handleFilterChange}>
-            <option value="all">All</option>
-            <option value="true">Completed</option>
-            <option value="false">Pending</option>
+  
+    onMount(() => {
+      if (window.matchMedia('(min-width: 768px)').matches) {
+        isToggled = true;
+      }
+    });
+  </script>
+  
+  <div class="relative w-full max-w-3xl mx-auto">
+    <button 
+      type="button" 
+      class="md:hidden flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 p-3 rounded-full text-white shadow-lg z-10"
+      on:click={hideform}
+      aria-label="Toggle filter form"
+    >
+      <i class="fa-solid fa-filter"></i>
+    </button>
+    
+    <div class="flex flex-col md:flex-row items-stretch md:items-center gap-4 backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 p-4 mt-2 md:mt-0" class:hidden={!isToggled}>
+      <div class="relative md:w-1/4">
+        <select 
+          on:change={handleFilterChange}
+          class="w-full p-3 border-0 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 appearance-none focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+        >
+          <option value="all">All Tasks</option>
+          <option value="true">Completed</option>
+          <option value="false">Pending</option>
         </select>
-        <input type="search" name="search task" placeholder="Search task" bind:value={searchQuery} />
-        <button class="search" on:click={handleSearch}><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-indigo-500 dark:text-indigo-400">
+          <i class="fa-solid fa-chevron-down text-xs"></i>
+        </div>
+      </div>
+      
+      <div class="relative md:w-2/4 flex-grow">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <input 
+          type="search" 
+          placeholder="Search for tasks..." 
+          bind:value={searchQuery}
+          class="w-full p-3 border-0 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all pl-10"
+        />
+      </div>
+      
+      <button 
+        class="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium p-3 rounded-xl transition-all duration-200 md:w-1/4 shadow-md hover:shadow-lg"
+        on:click={handleSearch}
+      >
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Search</span>
+      </button>
     </div>
-</div>
-
-<style>
-    div {
-        display: flex;
-        gap: 1rem;
-        width: 40vw;
-        height: 40px;
-    }
-    input {
-        padding: 0.7rem;
-        width: 50%;
-        border: 1px #8787 solid;
-        outline: none;
-        border-radius: 8px;
-    }
-    button {
-        padding: 0.6rem 1.2rem;
-        margin-left: 5px;
-        border: none;
-        border-radius: 8px;
-        background-color: #ffb703;
-        width: 20%;
-        color: white;
-        cursor: pointer;
-        font-size: medium;
-    }
-    button i {
-        font-size: medium;
-    }
-
-    select {
-        padding: 0.7rem;
-        width: 20%;
-        border: none;
-        background-color: white;
-        outline: none;
-        border-radius: 8px;
-        margin-left: 35px;
-        height: 40px;
-    }
-    h3 {
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-        font-size: larger;
-    }
-    .s {
-        display: flex;
-    }
-    .s #f {
-        margin-right: -2.6rem;
-        cursor: pointer;
-        background-color: none !important;
-        border: none;
-        width:fit-content!important;
-
-    }
-    .form {
+  </div>
+  
+  <style type="text/tailwindcss">
+    @layer components {
+      .hidden {
         display: none;
-        justify-content: center;
-        align-items: center;
-        animation: both 2s;
-     
+      }
     }
-
+    @layer utilities {
+      .hidden {
+        display: none;
+      }
+    }
+    @layer base {
+      .hidden {
+        display: none;
+      }
+    }
+    @layer forms {
+      .hidden {
+        display: none;
+      }
+    }
     
-
-    
-</style>
+  </style>
